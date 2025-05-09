@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
+import logo from "./assets/CheckworthyAILogo.png""
 
-const BASE_URL = "https://fastapi-monitoring.fly.dev"; // Change later 
+const BASE_URL = "https://fastapi-monitoring.fly.dev"; // Change later
 
 function App() {
   const [monitorData, setMonitorData] = useState(null);
@@ -42,9 +43,9 @@ function App() {
 
   return (
     <div style={{ fontFamily: "Arial", padding: "20px" }}>
-      <h1>AI Agent Monitoring Dashboard</h1>
+      <h1>Checkworthy AI Dashboard</h1>
       <p>Real-time insights from monitored AI agents</p>
-
+<img src={logo} alt="CheckworthyAILogo" style={{ height: "50px", marginRight: "15px" }} />
       {monitorData && (
         <div style={{ marginTop: "20px" }}>
           <h2>Stats</h2>

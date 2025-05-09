@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 
-const BASE_URL = "https://fastapi-monitoring.fly.dev/docs"; // Change later 
+const BASE_URL = "https://fastapi-monitoring.fly.dev"; // Change later 
 
 function App() {
   const [monitorData, setMonitorData] = useState(null);

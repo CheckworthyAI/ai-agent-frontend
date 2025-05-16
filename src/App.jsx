@@ -7,6 +7,7 @@ function App() {
   const [showDashboard, setShowDashboard] = useState(false);
   const [monitorData, setMonitorData] = useState(null);
   const [logs, setLogs] = useState([]);
+  const [agentNames, setAgentNames] = useState([]);
   const [summary, setSummary] = useState("");
   const [loading, setLoading] = useState(false);
   const [agentName, setAgentName] = useState("");
@@ -34,7 +35,12 @@ function App() {
     try {
       const res = await fetch(`${BASE_URL}/get-logs`);
       const data = await res.json();
-      setLogs(data.logs || []);
+      const allLogs = data.logs || [];
+      setLogs(allLogs);
+
+      // Extract unique agent names
+      const names = [...new Set(allLogs.map(log => log.agent_name))];
+      setAgentNames(names);
     } catch (error) {
       console.error("Error fetching logs:", error);
     }
@@ -64,6 +70,7 @@ function App() {
   };
 
   const runAudit = async () => {
+    if (!agentName) return alert("Please select an agent name.");
     setLoading(true);
     try {
       const res = await fetch(`${BASE_URL}/reason`, {
@@ -89,9 +96,9 @@ function App() {
         </header>
 
         <section style={styles.hero}>
-          <h1 style={styles.heroTitle}>Monitor And Audit Your AI Agents</h1>
+          <h1 style={styles.heroTitle}>Audit your AI agents.<br />Automatically.</h1>
           <p style={styles.heroSubtitle}>
-            Checkworthy AI helps you monitor, evaluate, and trust your LLMs Agents — effortlessly.
+            Checkworthy AI helps you monitor, evaluate, and trust your LLMs — effortlessly.
           </p>
           <button style={styles.ctaButton} onClick={() => setShowDashboard(true)}>
             Launch Dashboard
@@ -183,7 +190,7 @@ function App() {
                 <tr key={idx} style={{ borderBottom: "1px solid #ddd" }}>
                   <td style={styles.tableCell}>{log.agent_name}</td>
                   <td style={styles.tableCell}>{log.user_input}</td>
-                  <td style={styles.tableCell}>{log.output || "N/A"}</td>
+                  <td style={styles.tableCell}>{log.agent_output || log.output || "N/A"}</td>
                   <td style={styles.tableCell}>{new Date(log.timestamp).toLocaleString()}</td>
                 </tr>
               ))}
@@ -194,10 +201,30 @@ function App() {
 
       <section style={styles.card}>
         <h2>🧠 Run GPT Audit</h2>
-        <p>Enter an agent name to evaluate its recent performance:</p>
+        <label style={{ marginBottom: "10px", display: "block", fontWeight: 500 }}>
+          Select an agent to evaluate:
+        </label>
+        <select
+          value={agentName}
+          onChange={(e) => setAgentName(e.target.value)}
+          style={{
+            padding: "10px",
+            borderRadius: "8px",
+            border: "1px solid #ccc",
+            marginBottom: "20px",
+            minWidth: "200px"
+          }}
+        >
+          <option value="">-- Select Agent --</option>
+          {agentNames.map((name, idx) => (
+            <option key={idx} value={name}>{name}</option>
+          ))}
+        </select>
+
         <button onClick={runAudit} disabled={loading || !agentName} style={styles.ctaButton}>
           {loading ? "Running..." : `Generate Summary for ${agentName || "Agent"}`}
         </button>
+
         {summary && (
           <p style={{ marginTop: "15px", whiteSpace: "pre-wrap" }}>
             <strong>Audit Result:</strong><br />{summary}
@@ -208,14 +235,11 @@ function App() {
   );
 }
 
-// ----------------------------
-// ✨ Styles
-// ----------------------------
 const styles = {
   landingWrapper: {
     minHeight: "100vh",
-    width: "100vw",              // ✅ ensures full width
-    overflowX: "hidden",         // ✅ prevents scrollbars
+    width: "100vw",
+    overflowX: "hidden",
     backgroundColor: "#f0f0f0",
     fontFamily: "'Inter', sans-serif",
     color: "#111",
@@ -230,7 +254,7 @@ const styles = {
     marginBottom: "40px"
   },
   headerTitle: {
-    fontSize: "2.5rem",
+    fontSize: "1.5rem",
     fontWeight: 600,
     margin: 0
   },
@@ -243,7 +267,7 @@ const styles = {
     textAlign: "center"
   },
   heroTitle: {
-    fontSize: "1.8rem",
+    fontSize: "2.8rem",
     fontWeight: "600",
     marginBottom: "20px"
   },
@@ -287,9 +311,13 @@ const styles = {
     textAlign: "center"
   },
   dashboardContainer: {
-    backgroundColor: "#f5f5f7",
+    backgroundColor: "#f0f0f0",
+    minHeight: "100vh",
+    width: "100vw",
     padding: "40px",
-    fontFamily: "'Inter', sans-serif"
+    fontFamily: "'Inter', sans-serif",
+    boxSizing: "border-box",
+    overflowX: "hidden"
   },
   input: {
     padding: "10px",
@@ -316,6 +344,7 @@ const styles = {
 };
 
 export default App;
+
 
 
 

@@ -10,7 +10,11 @@ function App() {
   const [agentNames, setAgentNames] = useState([]);
   const [summary, setSummary] = useState("");
   const [loading, setLoading] = useState(false);
-  const [agentName, setAgentName] = useState("");
+
+  // ✨ Split state
+  const [captureAgentName, setCaptureAgentName] = useState("");
+  const [auditAgentName, setAuditAgentName] = useState("");
+
   const [userInput, setUserInput] = useState("");
   const [output, setOutput] = useState("");
 
@@ -38,7 +42,6 @@ function App() {
       const allLogs = data.logs || [];
       setLogs(allLogs);
 
-      // Extract unique agent names
       const names = [...new Set(allLogs.map(log => log.agent_name))];
       setAgentNames(names);
     } catch (error) {
@@ -47,19 +50,19 @@ function App() {
   };
 
   const handleCapture = async () => {
-    if (!agentName || !userInput || !output) return alert("All fields are required.");
+    if (!captureAgentName || !userInput || !output) return alert("All fields are required.");
     try {
       await fetch(`${BASE_URL}/capture-input`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          agent_name: agentName,
+          agent_name: captureAgentName,
           user_input: userInput,
           agent_output: output,
           timestamp: new Date().toISOString()
         })
       });
-      setAgentName("");
+      setCaptureAgentName("");
       setUserInput("");
       setOutput("");
       fetchLogs();
@@ -70,13 +73,13 @@ function App() {
   };
 
   const runAudit = async () => {
-    if (!agentName) return alert("Please select an agent name.");
+    if (!auditAgentName) return alert("Please select an agent name.");
     setLoading(true);
     try {
       const res = await fetch(`${BASE_URL}/reason`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ agent_name: agentName })
+        body: JSON.stringify({ agent_name: auditAgentName })
       });
       const data = await res.json();
       setSummary(data.summary || "No summary returned.");
@@ -96,7 +99,7 @@ function App() {
         </header>
 
         <section style={styles.hero}>
-          <h1 style={styles.heroTitle}>Audit your AI agents.<br />Automatically.</h1>
+          <h1 style={styles.heroTitle}>Monitor And Audit your AI agents.</h1>
           <p style={styles.heroSubtitle}>
             Checkworthy AI helps you monitor, evaluate, and trust your LLMs — effortlessly.
           </p>
@@ -166,7 +169,7 @@ function App() {
       <section style={styles.card}>
         <h2>📝 Capture Agent Log</h2>
         <div style={{ display: "flex", gap: "10px", flexWrap: "wrap", marginBottom: "15px" }}>
-          <input placeholder="Agent Name" value={agentName} onChange={(e) => setAgentName(e.target.value)} style={styles.input} />
+          <input placeholder="Agent Name" value={captureAgentName} onChange={(e) => setCaptureAgentName(e.target.value)} style={styles.input} />
           <input placeholder="User Input" value={userInput} onChange={(e) => setUserInput(e.target.value)} style={styles.input} />
           <input placeholder="Agent Output" value={output} onChange={(e) => setOutput(e.target.value)} style={styles.input} />
         </div>
@@ -205,8 +208,8 @@ function App() {
           Select an agent to evaluate:
         </label>
         <select
-          value={agentName}
-          onChange={(e) => setAgentName(e.target.value)}
+          value={auditAgentName}
+          onChange={(e) => setAuditAgentName(e.target.value)}
           style={{
             padding: "10px",
             borderRadius: "8px",
@@ -221,8 +224,8 @@ function App() {
           ))}
         </select>
 
-        <button onClick={runAudit} disabled={loading || !agentName} style={styles.ctaButton}>
-          {loading ? "Running..." : `Generate Summary for ${agentName || "Agent"}`}
+        <button onClick={runAudit} disabled={loading || !auditAgentName} style={styles.ctaButton}>
+          {loading ? "Running..." : `Generate Summary for ${auditAgentName || "Agent"}`}
         </button>
 
         {summary && (
@@ -254,7 +257,7 @@ const styles = {
     marginBottom: "40px"
   },
   headerTitle: {
-    fontSize: "1.5rem",
+    fontSize: "2.5rem",
     fontWeight: 600,
     margin: 0
   },
@@ -267,7 +270,7 @@ const styles = {
     textAlign: "center"
   },
   heroTitle: {
-    fontSize: "2.8rem",
+    fontSize: "1.8rem",
     fontWeight: "600",
     marginBottom: "20px"
   },
@@ -344,6 +347,7 @@ const styles = {
 };
 
 export default App;
+
 
 
 

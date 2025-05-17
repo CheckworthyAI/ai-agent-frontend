@@ -4,7 +4,7 @@ import logo from "./assets/CheckworthyAILogo.png";
 const BASE_URL = "https://fastapi-monitoring.fly.dev";
 
 function App() {
-  const [showDashboard, setShowDashboard] = useState(false);
+  const [showDashboard, setShowDashboard] = useState(window.location.hash === "#dashboard");
   const [monitorData, setMonitorData] = useState(null);
   const [logs, setLogs] = useState([]);
   const [agentNames, setAgentNames] = useState([]);
@@ -15,6 +15,14 @@ function App() {
   const [auditAgentName, setAuditAgentName] = useState("");
   const [userInput, setUserInput] = useState("");
   const [output, setOutput] = useState("");
+
+  useEffect(() => {
+    const handleHashChange = () => {
+      setShowDashboard(window.location.hash === "#dashboard");
+    };
+    window.addEventListener("hashchange", handleHashChange);
+    return () => window.removeEventListener("hashchange", handleHashChange);
+  }, []);
 
   useEffect(() => {
     if (showDashboard) {
@@ -87,7 +95,6 @@ function App() {
     }
   };
 
-  // 🌟 Landing Page
   if (!showDashboard) {
     return (
       <div style={styles.landingWrapper}>
@@ -101,7 +108,10 @@ function App() {
           <p style={styles.heroSubtitle}>
             Checkworthy AI helps you monitor, evaluate, and trust your LLMs — effortlessly.
           </p>
-          <button style={styles.ctaButton} onClick={() => setShowDashboard(true)}>
+          <button
+            style={styles.ctaButton}
+            onClick={() => (window.location.hash = "#dashboard")}
+          >
             Launch Dashboard
           </button>
         </section>
@@ -122,8 +132,11 @@ function App() {
         </section>
 
         <section style={styles.bottomCTA}>
-          <h2>Start auditing your AI in seconds.</h2>
-          <button style={styles.ctaButton} onClick={() => setShowDashboard(true)}>
+          <h2>Start auditing your AI in real-time.</h2>
+          <button
+            style={styles.ctaButton}
+            onClick={() => (window.location.hash = "#dashboard")}
+          >
             Open Dashboard
           </button>
           <p style={{ marginTop: "20px" }}>
@@ -134,7 +147,6 @@ function App() {
     );
   }
 
-  // 🚀 Dashboard
   return (
     <div style={styles.dashboardContainer}>
       <header style={{ display: "flex", alignItems: "center", marginBottom: "30px" }}>
@@ -239,7 +251,6 @@ function App() {
   );
 }
 
-// 🔧 Styles
 const styles = {
   landingWrapper: {
     minHeight: "100vh",

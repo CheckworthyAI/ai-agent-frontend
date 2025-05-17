@@ -11,10 +11,8 @@ function App() {
   const [summary, setSummary] = useState("");
   const [loading, setLoading] = useState(false);
 
-  // ✨ Split state
   const [captureAgentName, setCaptureAgentName] = useState("");
   const [auditAgentName, setAuditAgentName] = useState("");
-
   const [userInput, setUserInput] = useState("");
   const [output, setOutput] = useState("");
 
@@ -41,7 +39,6 @@ function App() {
       const data = await res.json();
       const allLogs = data.logs || [];
       setLogs(allLogs);
-
       const names = [...new Set(allLogs.map(log => log.agent_name))];
       setAgentNames(names);
     } catch (error) {
@@ -90,6 +87,7 @@ function App() {
     }
   };
 
+  // 🌟 Landing Page
   if (!showDashboard) {
     return (
       <div style={styles.landingWrapper}>
@@ -99,7 +97,7 @@ function App() {
         </header>
 
         <section style={styles.hero}>
-          <h1 style={styles.heroTitle}>Monitor And Audit your AI agents.</h1>
+          <h1 style={styles.heroTitle}>Monitor And Audit Your AI Agents.</h1>
           <p style={styles.heroSubtitle}>
             Checkworthy AI helps you monitor, evaluate, and trust your LLMs — effortlessly.
           </p>
@@ -136,38 +134,45 @@ function App() {
     );
   }
 
+  // 🚀 Dashboard
   return (
     <div style={styles.dashboardContainer}>
       <header style={{ display: "flex", alignItems: "center", marginBottom: "30px" }}>
         <img src={logo} alt="Checkworthy AI Logo" style={{ height: "50px", marginRight: "15px" }} />
         <div>
-          <h1 style={{ margin: 0 }}>Checkworthy AI Dashboard</h1>
+          <h1 style={{ margin: 0, color: "#000" }}>Checkworthy AI Dashboard</h1>
           <p style={{ margin: 0, color: "#666" }}>Monitor, analyze, and audit your deployed AI agents</p>
         </div>
       </header>
 
-      {monitorData && (
-        <section style={styles.card}>
-          <h2>📊 Stats</h2>
-          <p><strong>Total Logs:</strong> {monitorData.total_logs}</p>
-          <p><strong>Empty Inputs Found:</strong> {monitorData.empty_inputs_found}</p>
-          <p><strong>Agents Active:</strong> {Object.keys(monitorData.logs_per_agent).length}</p>
-        </section>
-      )}
+      <section style={styles.card}>
+        <h2 style={styles.sectionTitle}>📊 Stats</h2>
+        {monitorData ? (
+          <>
+            <p><strong>Total Logs:</strong> {monitorData.total_logs}</p>
+            <p><strong>Empty Inputs Found:</strong> {monitorData.empty_inputs_found}</p>
+            <p><strong>Agents Active:</strong> {Object.keys(monitorData.logs_per_agent).length}</p>
+          </>
+        ) : (
+          <p>Loading stats...</p>
+        )}
+      </section>
 
-      {monitorData && (
-        <section style={styles.card}>
-          <h2>🤖 Agent Activity</h2>
+      <section style={styles.card}>
+        <h2 style={styles.sectionTitle}>🤖 Agent Activity</h2>
+        {monitorData ? (
           <ul>
             {Object.entries(monitorData.logs_per_agent).map(([agent, count]) => (
               <li key={agent}><strong>{agent}</strong>: {count} logs</li>
             ))}
           </ul>
-        </section>
-      )}
+        ) : (
+          <p>Loading activity...</p>
+        )}
+      </section>
 
       <section style={styles.card}>
-        <h2>📝 Capture Agent Log</h2>
+        <h2 style={styles.sectionTitle}>📝 Capture Agent Log</h2>
         <div style={{ display: "flex", gap: "10px", flexWrap: "wrap", marginBottom: "15px" }}>
           <input placeholder="Agent Name" value={captureAgentName} onChange={(e) => setCaptureAgentName(e.target.value)} style={styles.input} />
           <input placeholder="User Input" value={userInput} onChange={(e) => setUserInput(e.target.value)} style={styles.input} />
@@ -177,11 +182,11 @@ function App() {
       </section>
 
       <section style={styles.card}>
-        <h2>📚 Captured Logs</h2>
+        <h2 style={styles.sectionTitle}>📚 Captured Logs</h2>
         <div style={{ overflowX: "auto" }}>
           <table style={{ width: "100%", borderCollapse: "collapse" }}>
             <thead>
-              <tr style={{ backgroundColor: "#eee" }}>
+              <tr>
                 <th style={styles.tableHeader}>Agent</th>
                 <th style={styles.tableHeader}>User Input</th>
                 <th style={styles.tableHeader}>Output</th>
@@ -189,47 +194,43 @@ function App() {
               </tr>
             </thead>
             <tbody>
-              {logs.map((log, idx) => (
-                <tr key={idx} style={{ borderBottom: "1px solid #ddd" }}>
-                  <td style={styles.tableCell}>{log.agent_name}</td>
-                  <td style={styles.tableCell}>{log.user_input}</td>
-                  <td style={styles.tableCell}>{log.agent_output || log.output || "N/A"}</td>
-                  <td style={styles.tableCell}>{new Date(log.timestamp).toLocaleString()}</td>
-                </tr>
-              ))}
+              {logs.length > 0 ? (
+                logs.map((log, idx) => (
+                  <tr key={idx} style={{ borderBottom: "1px solid #ddd" }}>
+                    <td style={styles.tableCell}>{log.agent_name}</td>
+                    <td style={styles.tableCell}>{log.user_input}</td>
+                    <td style={styles.tableCell}>{log.agent_output || log.output || "N/A"}</td>
+                    <td style={styles.tableCell}>{new Date(log.timestamp).toLocaleString()}</td>
+                  </tr>
+                ))
+              ) : (
+                <tr><td colSpan="4" style={styles.tableCell}>No logs found.</td></tr>
+              )}
             </tbody>
           </table>
         </div>
       </section>
 
       <section style={styles.card}>
-        <h2>🧠 Run GPT Audit</h2>
-        <label style={{ marginBottom: "10px", display: "block", fontWeight: 500 }}>
+        <h2 style={styles.sectionTitle}>🧠 Run GPT Audit</h2>
+        <label style={{ marginBottom: "10px", display: "block", fontWeight: 500, color: "#000" }}>
           Select an agent to evaluate:
         </label>
         <select
           value={auditAgentName}
           onChange={(e) => setAuditAgentName(e.target.value)}
-          style={{
-            padding: "10px",
-            borderRadius: "8px",
-            border: "1px solid #ccc",
-            marginBottom: "20px",
-            minWidth: "200px"
-          }}
+          style={styles.selectBox}
         >
           <option value="">-- Select Agent --</option>
           {agentNames.map((name, idx) => (
             <option key={idx} value={name}>{name}</option>
           ))}
         </select>
-
         <button onClick={runAudit} disabled={loading || !auditAgentName} style={styles.ctaButton}>
-          {loading ? "Running..." : `Generate Summary for ${auditAgentName || "Agent"}`}
+          {loading ? "Running..." : `Generate Summary ${auditAgentName}`}
         </button>
-
         {summary && (
-          <p style={{ marginTop: "15px", whiteSpace: "pre-wrap" }}>
+          <p style={{ marginTop: "15px", whiteSpace: "pre-wrap", color: "#000" }}>
             <strong>Audit Result:</strong><br />{summary}
           </p>
         )}
@@ -238,16 +239,14 @@ function App() {
   );
 }
 
+// 🔧 Styles
 const styles = {
   landingWrapper: {
     minHeight: "100vh",
-    width: "100vw",
-    overflowX: "hidden",
     backgroundColor: "#f0f0f0",
     fontFamily: "'Inter', sans-serif",
-    color: "#111",
     padding: "40px 20px",
-    boxSizing: "border-box"
+    textAlign: "center"
   },
   header: {
     display: "flex",
@@ -259,26 +258,26 @@ const styles = {
   headerTitle: {
     fontSize: "2.5rem",
     fontWeight: 600,
-    margin: 0
+    margin: 0,
+    color: "#000"
   },
   heroLogo: {
-    height: "40px"
+    height: "50px"
   },
   hero: {
     maxWidth: "700px",
-    margin: "0 auto 60px",
-    textAlign: "center"
+    margin: "0 auto 60px"
   },
   heroTitle: {
-    fontSize: "1.8rem",
-    fontWeight: "600",
-    marginBottom: "20px"
+    fontSize: "1.5rem",
+    fontWeight: "700",
+    marginBottom: "20px",
+    color: "#000"
   },
   heroSubtitle: {
     fontSize: "1.2rem",
     color: "#555",
-    marginBottom: "30px",
-    lineHeight: "1.6"
+    marginBottom: "30px"
   },
   ctaButton: {
     padding: "14px 28px",
@@ -298,13 +297,14 @@ const styles = {
     margin: "0 auto 80px"
   },
   featureCard: {
-    backgroundColor: "#f0f0f0",
+    backgroundColor: "#fff",
     padding: "30px",
     borderRadius: "12px",
     border: "1px solid #ddd",
     flex: "1 1 280px",
     maxWidth: "300px",
-    textAlign: "left"
+    textAlign: "left",
+    color: "#000"
   },
   bottomCTA: {
     maxWidth: "700px",
@@ -322,31 +322,58 @@ const styles = {
     boxSizing: "border-box",
     overflowX: "hidden"
   },
-  input: {
-    padding: "10px",
-    borderRadius: "8px",
-    border: "1px solid #ccc",
-    width: "calc(33% - 10px)",
-    flex: "1"
-  },
-  tableHeader: {
-    padding: "10px",
-    textAlign: "left",
-    fontWeight: "bold"
-  },
-  tableCell: {
-    padding: "10px"
-  },
   card: {
     background: "#fff",
+    color: "#000",
     borderRadius: "12px",
     padding: "25px",
     marginBottom: "30px",
     boxShadow: "0 4px 12px rgba(0,0,0,0.05)"
+  },
+  input: {
+    padding: "10px",
+    borderRadius: "8px",
+    border: "1px solid #ccc",
+    backgroundColor: "#fff",
+    color: "#000",
+    width: "calc(33% - 10px)",
+    flex: "1"
+  },
+  selectBox: {
+    padding: "10px",
+    borderRadius: "8px",
+    border: "1px solid #ccc",
+    marginBottom: "20px",
+    minWidth: "200px",
+    backgroundColor: "#fff",
+    color: "#000"
+  },
+  tableHeader: {
+    padding: "10px",
+    textAlign: "left",
+    fontWeight: "bold",
+    backgroundColor: "#f0f0f0",
+    color: "#000"
+  },
+  tableCell: {
+    padding: "10px",
+    backgroundColor: "#fff",
+    color: "#000"
+  },
+  sectionTitle: {
+    color: "#000",
+    marginBottom: "15px"
   }
 };
 
 export default App;
+
+
+
+
+
+
+
 
 
 

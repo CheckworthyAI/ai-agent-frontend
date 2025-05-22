@@ -16,6 +16,10 @@ function App() {
   const [userInput, setUserInput] = useState("");
   const [output, setOutput] = useState("");
 
+  const [agentA, setAgentA] = useState("");
+  const [agentB, setAgentB] = useState("");
+  const [abSummary, setAbSummary] = useState("");
+
   useEffect(() => {
     const handleHashChange = () => {
       setShowDashboard(window.location.hash === "#dashboard");
@@ -95,6 +99,24 @@ function App() {
     }
   };
 
+  const runABTest = async () => {
+    if (!agentA || !agentB) return alert("Please select both agents.");
+    setLoading(true);
+    try {
+      const res = await fetch(`${BASE_URL}/compare`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ agent_a: agentA, agent_b: agentB })
+      });
+      const data = await res.json();
+      setAbSummary(data.summary || "No comparison result returned.");
+    } catch (error) {
+      console.error("A/B Test failed:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   if (!showDashboard) {
     return (
       <div style={styles.landingWrapper}>
@@ -108,10 +130,7 @@ function App() {
           <p style={styles.heroSubtitle}>
             Checkworthy AI helps you monitor, evaluate, and trust your LLMs — effortlessly.
           </p>
-          <button
-            style={styles.ctaButton}
-            onClick={() => (window.location.hash = "#dashboard")}
-          >
+          <button style={styles.ctaButton} onClick={() => (window.location.hash = "#dashboard")}>
             Launch Dashboard
           </button>
         </section>
@@ -133,14 +152,11 @@ function App() {
 
         <section style={styles.bottomCTA}>
           <h2>Start auditing your AI in real-time.</h2>
-          <button
-            style={styles.ctaButton}
-            onClick={() => (window.location.hash = "#dashboard")}
-          >
+          <button style={styles.ctaButton} onClick={() => (window.location.hash = "#dashboard")}>
             Open Dashboard
           </button>
           <p style={{ marginTop: "20px" }}>
-            Or contact us: <a href="mailto:siddhartha@checkworthyai.com">siddhartha@checkworthyai.com</a>
+            contact us: <a href="mailto:siddhartha@checkworthyai.com">siddhartha@checkworthyai.com</a>
           </p>
         </section>
       </div>
@@ -228,22 +244,50 @@ function App() {
         <label style={{ marginBottom: "10px", display: "block", fontWeight: 500, color: "#000" }}>
           Select an agent to evaluate:
         </label>
-        <select
-          value={auditAgentName}
-          onChange={(e) => setAuditAgentName(e.target.value)}
-          style={styles.selectBox}
-        >
-          <option value="">-- Select Agent --</option>
-          {agentNames.map((name, idx) => (
-            <option key={idx} value={name}>{name}</option>
-          ))}
-        </select>
-        <button onClick={runAudit} disabled={loading || !auditAgentName} style={styles.ctaButton}>
-          {loading ? "Running..." : `Generate Summary ${auditAgentName}`}
-        </button>
+        <div style={{ display: "flex", flexDirection: "column", gap: "10px", maxWidth: "300px" }}>
+          <select
+            value={auditAgentName}
+            onChange={(e) => setAuditAgentName(e.target.value)}
+            style={styles.selectBox}
+          >
+            <option value="">-- Select Agent --</option>
+            {agentNames.map((name, idx) => (
+              <option key={idx} value={name}>{name}</option>
+            ))}
+          </select>
+          <button onClick={runAudit} disabled={loading || !auditAgentName} style={styles.ctaButton}>
+            {loading ? "Running..." : `Generate Summary ${auditAgentName}`}
+          </button>
+        </div>
         {summary && (
           <p style={{ marginTop: "15px", whiteSpace: "pre-wrap", color: "#000" }}>
             <strong>Audit Result:</strong><br />{summary}
+          </p>
+        )}
+      </section>
+
+      <section style={styles.card}>
+        <h2 style={styles.sectionTitle}>🧪 A/B Test Agents</h2>
+        <div style={{ display: "flex", gap: "10px", marginBottom: "10px", flexWrap: "wrap" }}>
+          <select value={agentA} onChange={(e) => setAgentA(e.target.value)} style={styles.selectBox}>
+            <option value="">Select Agent A</option>
+            {agentNames.map((name, idx) => (
+              <option key={idx} value={name}>{name}</option>
+            ))}
+          </select>
+          <select value={agentB} onChange={(e) => setAgentB(e.target.value)} style={styles.selectBox}>
+            <option value="">Select Agent B</option>
+            {agentNames.map((name, idx) => (
+              <option key={idx} value={name}>{name}</option>
+            ))}
+          </select>
+        </div>
+        <button onClick={runABTest} disabled={!agentA || !agentB || loading} style={styles.ctaButton}>
+          {loading ? "Comparing..." : "Compare Agents"}
+        </button>
+        {abSummary && (
+          <p style={{ marginTop: "15px", whiteSpace: "pre-wrap", color: "#000" }}>
+            <strong>A/B Test Result:</strong><br />{abSummary}
           </p>
         )}
       </section>
@@ -354,7 +398,7 @@ const styles = {
     padding: "10px",
     borderRadius: "8px",
     border: "1px solid #ccc",
-    marginBottom: "20px",
+    marginBottom: "0px",
     minWidth: "200px",
     backgroundColor: "#fff",
     color: "#000"
@@ -378,6 +422,7 @@ const styles = {
 };
 
 export default App;
+
 
 
 

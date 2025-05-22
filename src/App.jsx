@@ -102,14 +102,15 @@ function App() {
   const runABTest = async () => {
     if (!agentA || !agentB) return alert("Please select both agents.");
     setLoading(true);
+    setAbSummary("");
     try {
-      const res = await fetch(`${BASE_URL}/compare`, {
+      const res = await fetch(`${BASE_URL}/ab-test`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ agent_a: agentA, agent_b: agentB })
       });
       const data = await res.json();
-      setAbSummary(data.summary || "No comparison result returned.");
+      setAbSummary(data.comparison_summary || "No comparison result returned.");
     } catch (error) {
       console.error("A/B Test failed:", error);
     } finally {

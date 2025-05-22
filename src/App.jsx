@@ -160,6 +160,15 @@ function App() {
             contact us: <a href="mailto:siddhartha@checkworthyai.com">siddhartha@checkworthyai.com</a>
           </p>
         </section>
+        <footer style={{
+          textAlign: "center",
+          marginTop: "20px",
+          fontSize: "1rem",
+          color: "#333",
+          fontWeight: "500"
+        }}>
+          <p>Founder & CEO: <strong>Siddhartha Kosuri</strong></p>
+        </footer>
       </div>
     );
   }
@@ -292,6 +301,16 @@ function App() {
           </p>
         )}
       </section>
+      <footer style={{
+        textAlign: "center",
+        marginTop: "50px",
+        paddingTop: "20px",
+        fontSize: "0.95rem",
+        color: "#555",
+        borderTop: "1px solid #ddd"
+      }}>
+         © {new Date().getFullYear()} Checkworthy AI • Founder & CEO: <strong>Siddhartha Kosuri</strong>
+      </footer>
     </div>
   );
 }

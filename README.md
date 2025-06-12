@@ -1,16 +1,64 @@
 
 # ai-agent-frontend
-=======
-# React + Vite
+**Checkworthy AI – Monitoring Dashboard**
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+This is the web dashboard for Checkworthy AI. It gives you a clean, simple way to watch, audit, and trust your LLM agents.
+It’s plug-and-play: no learning curve, no busywork, just insights and action.
 
-Currently, two official plugins are available:
+**Whta's in it**
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+* Live stats and instant activity logs
+* Run GPT-powered audits right from the dashboard
+* Compare any two agents head-to-head
+* Works with your FastAPI backend (or any compatible API)
 
-## Expanding the ESLint configuration
+**Getting started**
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
- (Initial commit for frontend)
+1. Clone the repo
+
+   ```
+   git clone <repo-url>
+   cd <repo-folder>
+   ```
+2. Install dependencies
+
+   ```
+   npm install
+   ```
+3. Set up your backend
+   This dashboard expects a compatible FastAPI backend. By default, it talks to
+
+   ```
+   https://fastapi-monitoring.fly.dev
+   ```
+
+   To change the backend, update the `BASE_URL` in `App.js`.
+4. Start the app
+
+   ```
+   npm start
+   ```
+
+   It should open up at `http://localhost:3000` by default.
+
+**Features**
+
+* **Landing page** to introduce your AI and brand
+* **Live Dashboard** to monitor logs, metrics, and agent performance
+* **Log submission** — add new agent logs for monitoring
+* **Audit reports** — select any agent and generate a GPT-powered audit
+* **A/B test UI** — compare two agents’ responses instantly
+* **Everything auto-refreshes** (so you don’t have to!)
+
+**Config options**
+
+* To use your own backend, change the `BASE_URL` at the top of `App.js`.
+* You can customize the logo by replacing `src/assets/CheckworthyAILogo.png`.
+
+**Tech stack**
+
+* React (with hooks)
+* Vanilla CSS-in-JS for styling (easily customizable)
+* No Redux, no heavy frameworks — just React
+
+

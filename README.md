@@ -5,7 +5,7 @@
 This is the web dashboard for Checkworthy AI. It gives you a clean, simple way to watch, audit, and trust your LLM agents.
 It’s plug-and-play: no learning curve, no busywork, just insights and action.
 
-**Whta's in it**
+**What's in it**
 
 * Live stats and instant activity logs
 * Run GPT-powered audits right from the dashboard

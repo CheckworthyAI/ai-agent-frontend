@@ -278,7 +278,7 @@ function App() {
       </section>
 
       <section style={styles.card}>
-        <h2 style={styles.sectionTitle}>🧪 A/B Test Agents</h2>
+        <h2 style={styles.sectionTitle}>🧪 A/B Test agents</h2>
         <div style={{ display: "flex", gap: "10px", marginBottom: "10px", flexWrap: "wrap" }}>
           <select value={agentA} onChange={(e) => setAgentA(e.target.value)} style={styles.selectBox}>
             <option value="">Select Agent A</option>

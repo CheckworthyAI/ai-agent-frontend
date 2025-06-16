@@ -33,6 +33,7 @@ function App() {
       fetchMonitor();
       fetchLogs();
     }
+    // eslint-disable-next-line
   }, [showDashboard]);
 
   const fetchMonitor = async () => {
@@ -138,7 +139,7 @@ function App() {
 
         <section style={styles.featuresSection}>
           <div style={styles.featureCard}>
-            <h3>🧠 GPT-Powered Audits</h3>
+            <h3>GPT-Powered Audits</h3>
             <p>Automatically review AI agent responses for accuracy, relevance, and tone.</p>
           </div>
           <div style={styles.featureCard}>
@@ -220,7 +221,7 @@ function App() {
       </section>
 
       <section style={styles.card}>
-        <h2 style={styles.sectionTitle}>📚 Captured Logs</h2>
+        <h2 style={styles.sectionTitle}> Captured Logs</h2>
         <div style={{ overflowX: "auto" }}>
           <table style={{ width: "100%", borderCollapse: "collapse" }}>
             <thead>
@@ -250,7 +251,7 @@ function App() {
       </section>
 
       <section style={styles.card}>
-        <h2 style={styles.sectionTitle}>🧠 Run GPT Audit</h2>
+        <h2 style={styles.sectionTitle}> Run GPT Audit</h2>
         <label style={{ marginBottom: "10px", display: "block", fontWeight: 500, color: "#000" }}>
           Select an agent to evaluate:
         </label>
@@ -309,7 +310,7 @@ function App() {
         color: "#555",
         borderTop: "1px solid #ddd"
       }}>
-         © {new Date().getFullYear()} Checkworthy AI • Founder & CEO: <strong>Siddhartha Kosuri</strong>
+        © {new Date().getFullYear()} Checkworthy AI • Founder & CEO: <strong>Siddhartha Kosuri</strong>
       </footer>
     </div>
   );
@@ -442,6 +443,8 @@ const styles = {
 };
 
 export default App;
+
+
 
 
 
